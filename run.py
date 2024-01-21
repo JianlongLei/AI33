@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from model.Post import Post
 from model.User import User
 
-app = Flask(__name__, template_folder="template/")
+app = Flask(__name__, template_folder="template/", static_folder="static/")
 app.config.update(
     MONGO_URI='mongodb://localhost:27017/flask',
     MONGO_USERNAME='',
