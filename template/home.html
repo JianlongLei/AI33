@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>Home</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
 </head>
 <body>
     <div class="container">
@@ -11,8 +11,8 @@
             {% for post in posts %}
                 <div class="post">
                     <div class="post-header">
-                        <span class="post-author">{{ post.author.username }}</span>
-                        <span class="post-date">{{ post.date_posted.strftime('%b %d, %Y') }}</span>
+                        <span class="post-author">{{ post.author }}</span>
+                        <span class="post-date">{{ post.date }}</span>
                     </div>
                     <div class="post-content">
                         <p>{{ post.content }}</p>
