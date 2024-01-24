@@ -3,28 +3,38 @@
 <head>
     <title>Home</title>
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <!-- Include Bootstrap CSS (adjust the path based on your project structure) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
         <h1>Welcome to the Social Network</h1>
-        <div id="posts-container">
+        <div class="row">
             {% for post in posts %}
-                <div class="post">
-                    <div class="post-header">
-                        <span class="post-author">{{ post.author }}</span>
-                        <span class="post-date">{{ post.date }}</span>
-                    </div>
-                    <div class="post-content">
-                        <p>{{ post.content }}</p>
-                        {% if post.image_url %}
-                            <img src="{{ post.image_url }}" alt="Post Image">
-                        {% endif %}
+                <div class="col-md-6">
+                    <div class="post">
+                        <div class="post-header">
+                            <span class="post-author">{{ post['author'] }}</span>
+                            <span class="post-date">{{ post['date'] }}</span>
+                        </div>
+                        <div class="post-content">
+                            <p>{{ post['content'] }}</p>
+                            {% if post['image_url'] %}
+                                <img src="{{ post['image_url'] }}" alt="Post Image" class="img-fluid">
+                            {% endif %}
+                        </div>
+
                     </div>
                 </div>
+                 {% set last_post_id = post["post_id"] %}
             {% endfor %}
         </div>
         <a href="/post">Create a New Post</a>
+        <!-- Pagination Section -->
+        <div class="pagination">
+            <a href="/update/?last_post_id={{ last_post_id }}">Update</a>
+        </div>
+
     </div>
-    <!-- Rest of your HTML and CSS -->
 </body>
 </html>
