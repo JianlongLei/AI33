@@ -3,6 +3,7 @@ from flask import Flask
 from gridfs import GridFS
 from pymongo import MongoClient
 from pymongo.cursor import Cursor
+from pymongo.results import InsertOneResult
 
 from dao_model import *
 
@@ -21,11 +22,11 @@ class UserDao:
         cursor = UserDao.find_users_by_name(name)
         size = len(list(cursor))
         if size > 0:
-            return False
+            return InsertOneResult(inserted_id=None, acknowledged=False)
 
         user = {'name': name, 'password': psw, 'description': descr}
         result = db['user'].insert_one(user)
-        return result.acknowledged
+        return result
 
     @staticmethod
     def find_user(oid: ObjectId):
@@ -68,11 +69,11 @@ class PostDao:
         oid = ObjectId(uid)
         user = UserDao.find_user(oid)
         if user is None:
-            return False
+            return InsertOneResult(inserted_id=None, acknowledged=False)
 
         post = {'user': uid, 'content': content}
         result = db['post'].insert_one(post)
-        return result.acknowledged
+        return result
 
     @staticmethod
     def find_posts_by_uid(uid: str):
