@@ -5,6 +5,7 @@ class Post(BaseModel):
     post_id: str  # prime key
     user_id: str
     content: str
+    created_date: str
 
 
 class User(BaseModel):
