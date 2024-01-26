@@ -38,6 +38,16 @@ class UserDao:
         query = db['user'].find({'name': username})
         return query
 
+    @staticmethod
+    def delete_user_by_id(oid: ObjectId):
+        result = db['user'].delete_one({'_id': oid})
+        return result
+
+    @staticmethod
+    def delete_user_by_name(name: str):
+        result = db['user'].delete_one({'name': name})
+        return result
+
 
 class PostDao:
     @staticmethod
