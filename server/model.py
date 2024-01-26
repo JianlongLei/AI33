@@ -3,15 +3,30 @@ from typing import Union
 
 
 class Post(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+    user_id: str
+    content: str
 
 
 class User(BaseModel):
+    user_id: str
     name: str
     description: str
     uid: Union[str, None] = None
+
+
+class Register(BaseModel):
+    username: str
+    password: str
+    email: str
+
+
+class Login(BaseModel):
+    username: str
+    password: str
+
+
+class Logout(BaseModel):
+    user_id: str
 
 
 class Image(BaseModel):
