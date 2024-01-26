@@ -31,7 +31,7 @@ image_dao = ImageDao()
 #         image.show()
 
 
-def user_test():
+def test_user():
     res1 = user_dao.create_user(name="123", psw="psw", descr="test user")
     res2 = user_dao.create_user(name="123", psw="psw", descr="test user")
     print(f"Expected results: {True}, {False}; Actual results: {res1}, {res2}")
@@ -51,18 +51,31 @@ def user_test():
     print(f"Expected results: {1}, {0}; Actual results: {d_res1.deleted_count}, {d_res2.deleted_count}")
 
 
+def test_post():
+    pass
+
+
+def test_img():
+    img_path = "astronaut_rides_horse.png"
+    with open(img_path, 'rb') as image_file:
+        bs64data = base64.b64encode(image_file.read())
+        image_file.close()
+    result = image_dao.create_image(image_name=img_path, image_data=bs64data)
+    oid = result.inserted_id
+
+    img = image_dao.find_image(oid)
+    img_data = base64.b64decode(img.data)
+    print(len(bs64data))
+    print(len(img_data))
+    # base64 format may be too large to store in mongodb
+    res1 = bs64data == img_data
+    print(f"Expected result: {True}; Actual result: {res1}")
+
+    result = image_dao.delete_image(oid)
+    print(result)
+
+
 if __name__ == '__main__':
-    # app.run()
-    # test_find()
-    # test_insert()
-    # cursor = user_dao.find_user_by_name("asxsa")
-    # print(cursor is None)
-    # print(cursor)
-    # results = list(cursor)
-    # print(results)
-    # print(len(results))
-    # path = "astronaut_rides_horse.png"
-    # test_insert_image(path)
-    user_test()
-
-
+    # test_user()
+    test_post()
+    test_img()

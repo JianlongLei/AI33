@@ -111,8 +111,8 @@ class ImageDao:
     @staticmethod
     def create_image(image_name: str, image_data):
         image = {'name': image_name, 'data': image_data}
-        result = db['post'].insert_one(image)
-        return result.acknowledged
+        result = db['image'].insert_one(image)
+        return result
 
     @staticmethod
     def find_image(oid: ObjectId):
@@ -122,3 +122,8 @@ class ImageDao:
         base64_data = result['data']
         image = Image(image_id=str(oid), name=name, data=base64_data)
         return image
+
+    @staticmethod
+    def delete_image(oid: ObjectId):
+        result = db['image'].delete_one({'_id': oid})
+        return result
