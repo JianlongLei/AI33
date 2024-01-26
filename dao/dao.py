@@ -1,6 +1,7 @@
 from flask import Flask
 from pymongo import MongoClient
 from bson import ObjectId
+from gridfs import GridFS
 
 from dao_model import *
 
@@ -9,6 +10,7 @@ app = Flask(__name__)
 app.debug = True
 client = MongoClient('mongodb://localhost:27017/')
 db = client['flask']
+fs = GridFS(db, collection='image')
 
 
 class UserDao:
@@ -69,3 +71,20 @@ class PostDao:
     def delete_post(oid: ObjectId):
         result = db['post'].delete_one({'_id': oid})
         return result
+
+
+class ImageDao:
+    @staticmethod
+    def create_image(image_name: str, image_data):
+        image = {'name': image_name, 'data': image_data}
+        result = db['post'].insert_one(image)
+        return result.acknowledged
+
+    @staticmethod
+    def find_image(oid: ObjectId):
+        result = db['image'].find_one({'_id': oid})
+        oid = result['_id']
+        name = result['name']
+        base64_data = result['data']
+        image = Image(image_id=str(oid), name=name, data=base64_data)
+        return image

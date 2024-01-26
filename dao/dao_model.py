@@ -16,5 +16,6 @@ class User(BaseModel):
 
 
 class Image(BaseModel):
-    id: str  # prime key
-    image_src: str
+    image_id: str  # prime key
+    name: str
+    data: str
