@@ -1,19 +1,18 @@
 from pydantic import BaseModel
-from typing import Union
 
 
 class Post(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+    post_id: str  # prime key
+    user_id: str
+    content: str
 
 
 class User(BaseModel):
+    user_id: str  # prime key
     name: str
     description: str
-    uid: Union[str, None] = None
 
 
 class Image(BaseModel):
-    id: str
+    id: str  # prime key
     image_src: str
