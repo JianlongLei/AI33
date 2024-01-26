@@ -1,7 +1,8 @@
-from flask import Flask
-from pymongo import MongoClient
 from bson import ObjectId
+from flask import Flask
 from gridfs import GridFS
+from pymongo import MongoClient
+from pymongo.cursor import Cursor
 
 from dao_model import *
 
@@ -36,7 +37,16 @@ class UserDao:
     @staticmethod
     def find_users_by_name(username: str):
         query = db['user'].find({'name': username})
-        return query
+        users = []
+        for result in query:
+            # parse user
+            oid = result['_id']
+            name = result['name']
+            psw = result['password']
+            descr = result['description']
+            users.append(User(user_id=str(oid), name=name, psw=psw, description=descr))
+
+        return users
 
     @staticmethod
     def delete_user_by_id(oid: ObjectId):
@@ -59,13 +69,7 @@ class PostDao:
     @staticmethod
     def find_posts_by_uid(uid: str):
         query = db['post'].find({'user': uid})
-        posts = []
-        for result in query:
-            # parse post
-            oid = result['_id']
-            uid = result['user_id']
-            content = result['content']
-            posts.append(Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time))
+        posts = PostDao.parse_post_query(query)
         return posts
 
     @staticmethod
@@ -81,6 +85,26 @@ class PostDao:
     def delete_post(oid: ObjectId):
         result = db['post'].delete_one({'_id': oid})
         return result
+
+    @staticmethod
+    def find_all(order: int):
+        if order == 1 or -1:
+            query = db['post'].find().sort('_id', order)
+        else:
+            query = db['post'].find()
+        posts = PostDao.parse_post_query(query)
+        return posts
+
+    @staticmethod
+    def parse_post_query(query: Cursor):
+        posts = []
+        for result in query:
+            # parse post
+            oid = result['_id']
+            uid = result['user_id']
+            content = result['content']
+            posts.append(Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time))
+        return posts
 
 
 class ImageDao:
