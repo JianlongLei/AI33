@@ -30,6 +30,9 @@ class UserDao:
     @staticmethod
     def find_user(oid: ObjectId):
         result = db['user'].find_one({'_id': oid})
+        if result is None:
+            return None
+
         oid = result['_id']
         user = User(user_id=str(oid), name=result['name'], psw=result['password'], description=result['description'])
         return user
@@ -62,6 +65,11 @@ class UserDao:
 class PostDao:
     @staticmethod
     def create_post(uid, content):
+        oid = ObjectId(uid)
+        user = UserDao.find_user(oid)
+        if user is None:
+            return False
+
         post = {'user': uid, 'content': content}
         result = db['post'].insert_one(post)
         return result.acknowledged
