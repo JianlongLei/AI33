@@ -1,8 +1,4 @@
 import base64
-from io import BytesIO
-
-from PIL import Image
-from bson import ObjectId
 
 from dao import *
 
@@ -11,16 +7,6 @@ post_dao = PostDao()
 image_dao = ImageDao()
 
 
-# def test_find():
-#     user = user_dao.find_user(ObjectId('65ad2deae1bc7a3d038a81bf'))
-#     print(user)
-#
-#
-# def test_insert():
-#     res = user_dao.create_user(name="assa", psw="psw", descr="test user")
-#     print(res)
-#
-#
 # def test_insert_image(image_path):
 #     with open(image_path, 'rb') as image_file:
 #         image_data = base64.b64encode(image_file.read())
@@ -29,7 +15,6 @@ image_dao = ImageDao()
 #         print(image)
 #         image = Image.open(BytesIO(image))
 #         image.show()
-
 
 def test_user():
     print("---------Testing User----------")
@@ -70,6 +55,7 @@ def test_post():
     d_res2 = user_dao.delete_user_by_id(oid)
     print(f"Expected results: {1}, {1}; Actual results: {d_res1.deleted_count}, {d_res2.deleted_count}")
 
+
 def test_img():
     print("---------Testing Image----------")
     img_path = "astronaut_rides_horse.png"
@@ -92,6 +78,6 @@ def test_img():
 
 
 if __name__ == '__main__':
-    # test_user()
+    test_user()
     test_post()
-    # test_img()
+    test_img()
