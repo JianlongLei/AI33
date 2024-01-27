@@ -148,9 +148,8 @@ def update():
         excess_posts = len(current_post_list) - 10
         if excess_posts > 0:
             current_post_list = current_post_list[excess_posts:]
-        return render_template('home.html', posts=current_post_list, last_post_id=response['post_list'][-1]['post_id'])
-    return render_template('home.html')
-
+        return render_template('home.html', posts=current_post_list, last_post_id=response['post_list'][-1]['post_id'],user_name=current_user.username)
+    return render_template('home.html', posts=current_post_list,user_name=current_user.username)
 
 if __name__ == '__main__':
     app.run(debug=True)
