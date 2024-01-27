@@ -65,13 +65,13 @@ class UserDao:
 
 class PostDao:
     @staticmethod
-    def create_post(uid, content):
+    def create_post(uid, content, img_url):
         oid = ObjectId(uid)
         user = UserDao.find_user(oid)
         if user is None:
             return InsertOneResult(inserted_id=None, acknowledged=False)
 
-        post = {'user': uid, 'content': content}
+        post = {'user': uid, 'content': content, 'img_url': img_url}
         result = db['post'].insert_one(post)
         return result
 
@@ -87,7 +87,8 @@ class PostDao:
         oid = result['_id']
         uid = result['user_id']
         content = result['content']
-        post = Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time)
+        img_url = result['img_url']
+        post = Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url)
         return post
 
     @staticmethod
@@ -112,7 +113,9 @@ class PostDao:
             oid = result['_id']
             uid = result['user_id']
             content = result['content']
-            posts.append(Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time))
+            img_url = result['img_url']
+            posts.append(
+                Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url))
         return posts
 
 

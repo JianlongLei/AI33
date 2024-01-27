@@ -6,6 +6,7 @@ class Post(BaseModel):
     user_id: str
     content: str
     created_date: str
+    img_url: str
 
 
 class User(BaseModel):
