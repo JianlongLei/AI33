@@ -1,9 +1,10 @@
 bson~=0.5.10
 pymongo~=4.6.1
-Flask~=2.0.2
-Werkzeug~=2.0.3
+Flask~=2.2.5
+Werkzeug~=2.2.3
 torch~=2.3.0.dev20231214+cu121
 diffusers~=0.25.0
 requests~=2.31.0
 fastapi~=0.109.0
 pydantic~=2.5.3
+pillow~=10.2.0
