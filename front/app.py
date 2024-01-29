@@ -9,7 +9,8 @@ from model.User import User
 
 app = Flask(__name__, template_folder="template/", static_folder="static/")
 app.debug = True
-myserver = ""
+# myserver = os.environ["SERVER_URL"]
+myserver = 'localhost:8000'
 
 global current_user
 current_user = None
@@ -51,10 +52,10 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # url = myserver+"/login/"
-        # data = {'username': username, 'password': password}
-        # response = requests.post(url,json=data)
-        response = {"status": "success", "user_id": 1, "username": "example_user", "password": "example_password", "email": "123@gmail.com"}
+        url = myserver+"/login/"
+        data = {'username': username, 'password': password}
+        response = requests.post(url,json=data)
+        # response = {"status": "success", "user_id": 1, "username": "example_user", "password": "example_password", "email": "123@gmail.com"}
         # if response.json()['status'] == 'success':
         if response['status'] == 'success':
             # flash('You have successfully logged in!')
@@ -69,8 +70,8 @@ def logout():
     global current_user
     url = myserver+"/logout/"
     data = {"user_id": current_user.user_id}
-    # response = requests.get(url,json=data)
-    response = {"status": "success"}
+    response = requests.get(url,json=data)
+    # response = {"status": "success"}
     # if response.json()['status'] == 'success':
     if response['status'] == 'success':
         current_user = None
@@ -88,8 +89,8 @@ def post():
         # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         url = myserver+"/create/post/"
         data = {"user_id": current_user.user_id,"title":title, "content": content}
-        # response = requests.post(url,json=data)
-        response = {"status": "success"}
+        response = requests.post(url,json=data)
+        # response = {"status": "success"}
         # if response.json()['status'] == 'success':
         if response['status'] == 'success':
             return redirect(url_for('update'))
@@ -151,7 +152,4 @@ def update():
         return render_template('home.html', posts=current_post_list, last_post_id=response['post_list'][-1]['post_id'])
     return render_template('home.html')
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
 

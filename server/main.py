@@ -6,6 +6,7 @@ from typing import Annotated
 
 from agent import *
 from server.const import *
+from server.model import Login, Register
 from server.tools import *
 
 app = FastAPI()

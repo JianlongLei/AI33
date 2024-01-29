@@ -19,7 +19,7 @@ image_dao = ImageDao()
 def test_user():
     print("---------Testing User----------")
 
-    res1 = user_dao.create_user(name="123", psw="psw", descr="test user")
+    res1 = user_dao.create_user(name="123", psw="psw", email="abc@test.com")
     res2 = user_dao.create_user(name="123", psw="psw", descr="test user")
     print(f"Expected results: {True}, {False}; Actual results: {res1.acknowledged}, {res2.acknowledged}")
 

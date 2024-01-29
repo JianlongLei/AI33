@@ -1,9 +1,10 @@
-from model import *
+from bson import ObjectId
 from image_generator import *
+from server.dao.dao import UserDao, PostDao, ImageDao
 
-
-def init_db():
-    print("Initializing database...")
+user_dao = UserDao()
+post_dao = PostDao()
+image_dao = ImageDao()
 
 
 def get_image_bytes(image: str):
@@ -20,18 +21,30 @@ def save_post(
         content: str,
         image_id: str
 ):
-    print("Creating post...")
+    result = post_dao.create_post(uid=user_id, content=content, img_url=image_id)
+    return result
+
+
+def get_posts_by_uid(user_id: str):
+    result = post_dao.find_posts_by_uid(uid=user_id)
+    return result
 
 
 def check_user_validation(
-        user_name: str,
-        user_password: str
+        username: str,
+        password: str
 ):
-    return True
+    users = user_dao.find_users_by_name(username=username)
+    for user in users:
+        if user.password == password:
+            return user
+    return None
 
 
 def get_user_by_id(user_id: str):
-    return None
+    oid = ObjectId(user_id)
+    user = user_dao.find_user(oid)
+    return user
 
 
 def create_user(
@@ -39,4 +52,5 @@ def create_user(
         password: str,
         email: str
 ):
-    return None
+    result = user_dao.create_user(username, password, email)
+    return result

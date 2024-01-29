@@ -13,7 +13,7 @@ class User(BaseModel):
     user_id: str  # prime key
     name: str
     psw: str  # password
-    description: str
+    email: str
 
 
 class Image(BaseModel):
