@@ -5,12 +5,11 @@ from flask import *
 from flask import Flask
 from werkzeug.utils import secure_filename
 
-from User import User
+from model.User import User
 
 app = Flask(__name__, template_folder="template/", static_folder="static/")
 app.debug = True
-# myserver = os.environ["SERVER_URL"]
-myserver = 'localhost:8000'
+myserver = ""
 
 global current_user
 current_user = None
@@ -52,10 +51,10 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        url = myserver+"/login/"
-        data = {'username': username, 'password': password}
-        response = requests.post(url,json=data)
-        # response = {"status": "success", "user_id": 1, "username": "example_user", "password": "example_password", "email": "123@gmail.com"}
+        # url = myserver+"/login/"
+        # data = {'username': username, 'password': password}
+        # response = requests.post(url,json=data)
+        response = {"status": "success", "user_id": 1, "username": "example_user", "password": "example_password", "email": "123@gmail.com"}
         # if response.json()['status'] == 'success':
         if response['status'] == 'success':
             # flash('You have successfully logged in!')
@@ -70,8 +69,8 @@ def logout():
     global current_user
     url = myserver+"/logout/"
     data = {"user_id": current_user.user_id}
-    response = requests.get(url,json=data)
-    # response = {"status": "success"}
+    # response = requests.get(url,json=data)
+    response = {"status": "success"}
     # if response.json()['status'] == 'success':
     if response['status'] == 'success':
         current_user = None
@@ -89,8 +88,8 @@ def post():
         # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         url = myserver+"/create/post/"
         data = {"user_id": current_user.user_id,"title":title, "content": content}
-        response = requests.post(url,json=data)
-        # response = {"status": "success"}
+        # response = requests.post(url,json=data)
+        response = {"status": "success"}
         # if response.json()['status'] == 'success':
         if response['status'] == 'success':
             return redirect(url_for('update'))
@@ -106,14 +105,14 @@ def homepage():
     # posts_data = request.args.get('posts', [])
     # current_posts = posts_data
     if len(current_post_list) == 0:
-        url = myserver + "/homepage/"
-        response = requests.get(url)
-        # response = {"status": "success", "post_list":
-        #             [{"author": "User1", "date": "2022-01-01", "content": "First post", "image_url": "/static/images/post1.png","post_id": "1"},
-        #             {"author": "User2", "date": "2022-01-02", "content": "Second post", "image_url": "/static/images/post1.png","post_id":"2"},
-        #             {"author": "User2", "date": "2022-01-02", "content": "third post", "image_url": "/static/images/post1.png","post_id":"3" },
-        #             {"author": "User2", "date": "2022-01-02", "content": "fourth post", "image_url": "/static/images/post1.png","post_id":"4"},
-        #             ]}
+        # url = myserver + "/homepage/"
+        # response = requests.get(url)
+        response = {"status": "success", "post_list": 
+                    [{"author": "User1", "date": "2022-01-01", "content": "First post", "image_url": "/static/images/post1.png","post_id": "1"},
+                    {"author": "User2", "date": "2022-01-02", "content": "Second post", "image_url": "/static/images/post1.png","post_id":"2"},
+                    {"author": "User2", "date": "2022-01-02", "content": "third post", "image_url": "/static/images/post1.png","post_id":"3" },
+                    {"author": "User2", "date": "2022-01-02", "content": "fourth post", "image_url": "/static/images/post1.png","post_id":"4"},
+                    ]}
         # if response.json()['status'] == 'success':
         if response['status'] == 'success':
             # current_posts = response.json()['post_list']
@@ -125,20 +124,20 @@ def homepage():
 @app.route('/update/', methods=['GET', 'POST'])
 def update():
     global current_post_list
-    url = myserver + "/homepage/"
+    # url = myserver + "/homepage/"
     # last_post_id = request.args.get('last_post_id')
     last_post_id = current_post_list[-1]['post_id']
     data = {"last_post_id": last_post_id}
     print(data)
-    response = requests.get(url, json=data)
-    # response = {"status": "success", "post_list":
-    #     [{"author": "User1", "date": "2022-01-01", "content": "First post", "image_url": "/static/images/post1.png",
-    #       "post_id": "1"},
-    #      {"author": "User2", "date": "2022-01-02", "content": "Second post", "image_url": "/static/images/post1.png",
-    #       "post_id": "2"},
-    #      {"author": "User2", "date": "2022-01-02", "content": "third post", "image_url": "/static/images/post1.png",
-    #       "post_id": "3"},
-    #      ]}
+    # response = requests.get(url, json=data)
+    response = {"status": "success", "post_list":
+        [{"author": "User1", "date": "2022-01-01", "content": "First post", "image_url": "/static/images/post1.png",
+          "post_id": "1"},
+         {"author": "User2", "date": "2022-01-02", "content": "Second post", "image_url": "/static/images/post1.png",
+          "post_id": "2"},
+         {"author": "User2", "date": "2022-01-02", "content": "third post", "image_url": "/static/images/post1.png",
+          "post_id": "3"},
+         ]}
     # if response.json()['status'] == 'success':
     if response['status'] == 'success':
     # Iterate through response['post_list']
@@ -152,3 +151,6 @@ def update():
         return render_template('home.html', posts=current_post_list, last_post_id=response['post_list'][-1]['post_id'],user_name=current_user.username)
     return render_template('home.html', posts=current_post_list,user_name=current_user.username)
 
+if __name__ == '__main__':
+    print("ready")
+    app.run(host='0.0.0.0')
