@@ -58,7 +58,7 @@ def test_post():
 
 def test_img():
     print("---------Testing Image----------")
-    img_path = "astronaut_rides_horse.png"
+    img_path = "../images/astronaut_rides_horse.png"
     with open(img_path, 'rb') as image_file:
         bs64data = base64.b64encode(image_file.read())
         image_file.close()

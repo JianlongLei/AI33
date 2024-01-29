@@ -4,13 +4,19 @@ import time
 from bson import ObjectId
 from pymongo.cursor import Cursor
 from pymongo.results import InsertOneResult
-import motor.motor_asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from dao_model import *
+from server.const import Constant
 
 # connect to mongodb
 
-client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGODB_URL"])
+client = AsyncIOMotorClient(
+    Constant.app_settings.get('mongodb_url'),
+    username=Constant.app_settings.get('db_username'),
+    password=Constant.app_settings.get('db_password'),
+    uuidRepresentation="standard",
+)
 db = client.college
 fs = db.get_collection('image')
 

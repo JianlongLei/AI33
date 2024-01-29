@@ -12,5 +12,5 @@ pip install -r requirements.txt
 ##  Run the APP
 
 ```BASH
-flask --app hello run
+flask --app app run
 ```

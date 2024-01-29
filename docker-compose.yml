@@ -1,0 +1,38 @@
+version: '1'
+
+services:
+  app:
+    build: ./front
+    command: sh flask --app app run
+    ports:
+      - "80:80"
+
+  server:
+    build: ./server
+    command: sh uvicorn main:app --reload
+    volumes:
+      - ./server/images:/images
+    ports:
+      - 8000:8000
+    depends_on:
+      - mangodb
+    environment:
+      - MONGO_DB=ai3
+      - MONGO_URL=mongodb://root:secret@mongodb
+      - MONGO_USER=root
+      - MONGO_PASSWORD=secret
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=ai33
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data/db
+    command:
+      sh mongod --quiet --logpath /dev/null
