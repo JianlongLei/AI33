@@ -16,9 +16,11 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: hazel21/group33:latest
+        image: hazel21/webapp:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 5000
+      imagePullSecrets:
+      - name:  front-registry-secret
 
 ---
 apiVersion: v1
@@ -31,6 +33,6 @@ spec:
     app: webapp
   ports:
     - protocol: TCP
-      port: 3000
-      targetPort: 3000
+      port: 5000
+      targetPort: 5000
       nodePort: 30100
