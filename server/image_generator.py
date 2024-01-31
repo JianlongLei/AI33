@@ -26,9 +26,10 @@ def save_image(image_byte: bytes):
 
 
 def get_image(image_id: str):
-    with open(file_path(image_id), "rb") as image_file:
-        image_bytes = image_file.read()
-    return image_bytes
+    # with open(file_path(image_id), "rb") as image_file:
+    #     image_bytes = image_file.read()
+    # return image_bytes
+    return file_path(image_id)
 
 
 def generate_image_id():
@@ -36,8 +37,8 @@ def generate_image_id():
 
 
 def file_path(image_id: str):
-    return os.getcwd() + "/images/" + image_id
+    return os.getcwd() + "/images/" + image_id + ".png"
 
 
-def create_image(prompt: str):
+async def create_image(prompt: str):
     return save_image(image_generator(prompt))
