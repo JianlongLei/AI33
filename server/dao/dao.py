@@ -6,57 +6,52 @@ from pymongo.cursor import Cursor
 from pymongo.results import InsertOneResult
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from dao_model import *
-from server.const import Constant
+from dao.dao_model import UserModel, PostModel, PostCollection
 
+app_settings = {
+        'db_name': os.getenv('MONGO_DB'),
+        'mongodb_url': os.getenv('MONGO_URL'),
+        'db_username': os.getenv('MONGO_USER'),
+        'db_password': os.getenv('MONGO_PASSWORD'),
+    }
 # connect to mongodb
 
-client = AsyncIOMotorClient(
-    Constant.app_settings.get('mongodb_url'),
-    username=Constant.app_settings.get('db_username'),
-    password=Constant.app_settings.get('db_password'),
-    uuidRepresentation="standard",
-)
-db = client.college
-fs = db.get_collection('image')
+# client = AsyncIOMotorClient(
+#     app_settings.get('mongodb_url'),
+#     username=app_settings.get('db_username'),
+#     password=app_settings.get('db_password'),
+#     uuidRepresentation="standard",
+# )
+client = AsyncIOMotorClient("mongodb://localhost:27017/")
+db = client.ai33
+users_collection = db.get_collection('users')
+posts_collection = db.get_collection('posts')
 
 
 class UserDao:
     @staticmethod
-    def create_user(name, psw, email):
-        # prevent repeated username
-        cursor = UserDao.find_users_by_name(name)
-        size = len(list(cursor))
-        if size > 0:
-            return InsertOneResult(inserted_id=None, acknowledged=False)
+    async def create_user(user_info: UserModel):
+        new_user = await users_collection.insert_one(
+            user_info.model_dump(by_alias=True, exclude=["id"])
+        )
+        print(f'User created: {new_user}')
+        created_user = await users_collection.find_one(
+            {"_id": new_user.inserted_id}
+        )
+        print(f'Created user: {created_user}')
+        return created_user
 
-        user = {'name': name, 'password': psw, 'email': email}
-        result = db['user'].insert_one(user)
+    @staticmethod
+    async def find_user(oid: ObjectId):
+        result = await users_collection.find_one({'_id': oid})
+        if result is None:
+            return None
         return result
 
     @staticmethod
-    def find_user(oid: ObjectId):
-        result = db['user'].find_one({'_id': oid})
-        if result is None:
-            return None
-
-        oid = result['_id']
-        user = User(user_id=str(oid), name=result['name'], psw=result['password'], description=result['description'])
-        return user
-
-    @staticmethod
-    def find_users_by_name(username: str):
-        query = db['user'].find({'name': username})
-        users = []
-        for result in query:
-            # parse user
-            oid = result['_id']
-            name = result['name']
-            psw = result['password']
-            descr = result['email']
-            users.append(User(user_id=str(oid), name=name, psw=psw, description=descr))
-
-        return users
+    async def find_users_by_name(username: str):
+        result = await users_collection.find_one({'name': username})
+        return result
 
     @staticmethod
     def delete_user_by_id(oid: ObjectId):
@@ -71,27 +66,22 @@ class UserDao:
 
 class PostDao:
     @staticmethod
-    def create_post(uid, content, img_url):
-        oid = ObjectId(uid)
-        user = UserDao.find_user(oid)
-        if user is None:
-            return InsertOneResult(inserted_id=None, acknowledged=False)
-
-        post = {'user': uid, 'content': content, 'created_date': time.time(), 'img_url': img_url}
-        result = db['post'].insert_one(post)
-        return result
-
-    @staticmethod
-    def find_posts_by_uid(uid: str):
-        query = db['post'].find({'user': uid})
-        posts = PostDao.parse_post_query(query)
-        return posts
+    async def create_post(post_info: PostModel):
+        new_post = await posts_collection.insert_one(
+            post_info.model_dump(by_alias=True, exclude=["id"])
+        )
+        created_post = await posts_collection.find_one(
+            {'_id': new_post.inserted_id}
+        )
+        return created_post
 
     @staticmethod
-    def find_posts():
-        query = db['post'].find()
-        posts = PostDao.parse_post_query(query)
-        return posts
+    async def find_posts_by_uid(uid: str):
+        return PostCollection(posts=await posts_collection.find({'user_id': uid}).to_list(100))
+
+    @staticmethod
+    async def find_posts():
+        return PostCollection(posts=await posts_collection.find().to_list(100))
 
     @staticmethod
     def find_post(oid: ObjectId):
@@ -100,7 +90,7 @@ class PostDao:
         uid = result['user_id']
         content = result['content']
         img_url = result['img_url']
-        post = Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url)
+        post = PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url)
         return post
 
     @staticmethod
@@ -127,7 +117,7 @@ class PostDao:
             content = result['content']
             img_url = result['img_url']
             posts.append(
-                Post(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url))
+                PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url))
         return posts
 
 
