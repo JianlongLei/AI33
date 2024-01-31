@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="posts-container">
+            <!-- Posts will be dynamically inserted here -->
+            <!-- Example of a post -->
+            <div class="post">
+                <div class="post-header">
+                    <span class="post-author">Username</span>
+                    <span class="post-date">January 17, 2024</span>
+                </div>
+                <div class="post-content">
+                    <p>This is an example post. It's a great day to start something new!</p>
+                    <img src="path_to_image.jpg" alt="Post Image">
+                </div>
+            </div>
+            <!-- Repeat for each post -->
+        </div>
+    </div>
+
+    <style>
+        .container {
+            width: 70%;
+            margin: auto;
+            text-align: center;
+        }
+
+        #posts-container {
+            margin-top: 30px;
+        }
+
+        .post {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .post-header {
+            font-size: 0.9em;
+            color: #777;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .post-author {
+            font-weight: bold;
+        }
+
+        .post-date {
+            float: right;
+        }
+
+        .post-content p {
+            margin: 15px 0;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        a {
+            display: block;
+            margin-top: 30px;
+            color: #7f7fd5;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</body>
+</html>
