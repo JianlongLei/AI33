@@ -42,8 +42,8 @@ async def check_user_validation(
 ):
     user = await user_dao.find_users_by_name(username=username)
     print(user)
-    if user['psw'] == password:
-        user['psw'] = ''
+    if isinstance(user, dict) and user['password'] == password:
+        user['password'] = ''
         return user
     return None
 
