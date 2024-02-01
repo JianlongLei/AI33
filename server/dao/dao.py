@@ -1,19 +1,18 @@
 import os
-import time
+import uuid
 
 from bson import ObjectId
 from pymongo.cursor import Cursor
-from pymongo.results import InsertOneResult
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from dao.dao_model import UserModel, PostModel, PostCollection
 
 app_settings = {
-        'db_name': os.getenv('MONGO_DB'),
-        'mongodb_url': os.getenv('MONGO_URL'),
-        'db_username': os.getenv('MONGO_USER'),
-        'db_password': os.getenv('MONGO_PASSWORD'),
-    }
+    'db_name': os.getenv('MONGO_DB'),
+    'mongodb_url': os.getenv('MONGO_URL'),
+    'db_username': os.getenv('MONGO_USER'),
+    'db_password': os.getenv('MONGO_PASSWORD'),
+}
 # connect to mongodb
 
 # client = AsyncIOMotorClient(
@@ -28,6 +27,12 @@ users_collection = db.get_collection('users')
 posts_collection = db.get_collection('posts')
 
 
+def fix_object_id(sample: dict) -> dict:
+    sample['id'] = str(sample['_id'])
+    del [sample['_id']]
+    return sample
+
+
 class UserDao:
     @staticmethod
     async def create_user(user_info: UserModel):
@@ -39,29 +44,29 @@ class UserDao:
             {"_id": new_user.inserted_id}
         )
         print(f'Created user: {created_user}')
-        return created_user
+        return fix_object_id(created_user)
 
     @staticmethod
     async def find_user(oid: ObjectId):
         result = await users_collection.find_one({'_id': oid})
         if result is None:
             return None
-        return result
+        return fix_object_id(result)
 
     @staticmethod
     async def find_users_by_name(username: str):
-        result = await users_collection.find_one({'name': username})
-        return result
+        result = await users_collection.find_one({'username': username})
+        return fix_object_id(result)
 
     @staticmethod
     def delete_user_by_id(oid: ObjectId):
         result = db['user'].delete_one({'_id': oid})
-        return result
+        return fix_object_id(result)
 
     @staticmethod
     def delete_user_by_name(name: str):
-        result = db['user'].delete_one({'name': name})
-        return result
+        result = db['user'].delete_one({'username': name})
+        return fix_object_id(result)
 
 
 class PostDao:
@@ -73,15 +78,23 @@ class PostDao:
         created_post = await posts_collection.find_one(
             {'_id': new_post.inserted_id}
         )
-        return created_post
+        return fix_object_id(created_post)
 
     @staticmethod
     async def find_posts_by_uid(uid: str):
-        return PostCollection(posts=await posts_collection.find({'user_id': uid}).to_list(100))
+        posts = await posts_collection.find({'user_id': uid}).to_list(100)
+        fixed_list = list()
+        for post in posts:
+            fixed_list.append(fix_object_id(post))
+        return PostCollection(posts=fixed_list)
 
     @staticmethod
     async def find_posts():
-        return PostCollection(posts=await posts_collection.find().to_list(100))
+        posts = await posts_collection.find().to_list(100)
+        fixed_list = list()
+        for post in posts:
+            fixed_list.append(fix_object_id(post))
+        return PostCollection(posts=fixed_list)
 
     @staticmethod
     def find_post(oid: ObjectId):
@@ -90,7 +103,8 @@ class PostDao:
         uid = result['user_id']
         content = result['content']
         img_url = result['img_url']
-        post = PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url)
+        post = PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time,
+                         img_url=img_url)
         return post
 
     @staticmethod
@@ -117,7 +131,8 @@ class PostDao:
             content = result['content']
             img_url = result['img_url']
             posts.append(
-                PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time, img_url=img_url))
+                PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time,
+                          img_url=img_url))
         return posts
 
 
