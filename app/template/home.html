@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <!-- Include Bootstrap CSS (adjust the path based on your project structure) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Social Network</h1>
+        <h2>
+        <a href="/logout" onmouseover="showLogoutTooltip()" onmouseout="hideLogoutTooltip()"> {{user_name}} :)</a>
+        </h2>
+        <div id="logout-tooltip" style="display: none;">Click to logout</div>
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6">
+                    <div class="post">
+                        <div class="post-header">
+                            <span class="post-author">{{ post['author'] }}</span>
+                            <span class="post-date">{{ post['date'] }}</span>
+                        </div>
+                        <div class="post-content">
+                            <p>{{ post['content'] }}</p>
+                            {% if post['img_url'] %}
+                                <img src="{{ post['img_url'] }}" alt="Post Image" class="img-fluid">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+<!--                {% set last_post_id = post["post_id"] %}-->
+            {% endfor %}
+        </div>
+        <a href="/post">Create a New Post</a>
+        <!-- Pagination Section -->
+        <div class="pagination">
+            <a href="/update">Update</a>
+        </div>
+    </div>
+
+    <script>
+        function showLogoutTooltip() {
+            document.getElementById('logout-tooltip').style.display = 'block';
+        }
+
+        function hideLogoutTooltip() {
+            document.getElementById('logout-tooltip').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

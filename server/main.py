@@ -1,88 +1,149 @@
-from fastapi import Depends, FastAPI, Path
-from fastapi.openapi.models import Response
-from fastapi.security import OAuth2PasswordBearer
+import datetime
+from fastapi import FastAPI, Body
 
 from typing import Annotated
 
+from starlette import status
+from starlette.responses import FileResponse
+
 from agent import *
-from server.const import *
-from server.model import Login, Register
-from server.tools import *
+from const import *
+from dao.dao_model import UserModel, PostModel
+from model import UserResponse, PostResponse, PostCollectionResponse
+from tools import *
 
 app = FastAPI()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
-@app.get("/posts/{user_id}")
-def read_item(
-        token: Annotated[str, Depends(oauth2_scheme)],
+@app.get(
+    "/posts/{user_id}",
+    response_description="Get all posts from a specific user",
+    response_model=PostCollectionResponse,
+    response_model_by_alias=False,
+)
+async def read_item(
         user_id: Annotated[str, Path(title="The Id of the user")],
-        last_post_id: Annotated[str, Path(title="The last Id of previous posts result")],
-        page_size: Annotated[int, Path(title="The page size of this query wants")] = 10
 ):
-    return {"user_id": user_id, "last_post_id": last_post_id, "page_size": page_size}
+    posts = await get_posts_by_uid(user_id)
+    response = PostCollectionResponse(status=SUCCESS)
+    response.posts = posts.posts
+    return response
 
 
-@app.put("/homepage/")
-def homepage(
-        token: Annotated[str, Depends(oauth2_scheme)],
-        last_post_id: Annotated[str, Path(title="The last Id of previous posts result")],
-        page_size: Annotated[int, Path(title="The page size of this query wants")] = 10
-):
-    # return {"last_post_id": last_post_id, "page_size": page_size}
-    user = User()
-    user.name = "a"
-    user.description = "b"
-    user.uid = "c"
-    return user
+@app.get(
+    "/homepage/",
+    response_description="Get all posts from all user",
+    response_model=PostCollectionResponse,
+    response_model_by_alias=False,
+)
+async def homepage():
+    result = await get_all_posts()
+    response = PostCollectionResponse(status=SUCCESS)
+    response.posts = result.posts
+    return response
 
 
-@app.get("/image/{image_id}")
-def get_image(
-        token: Annotated[str, Depends(oauth2_scheme)],
+@app.get(
+    "/image/{image_id}",
+    response_description="get an image with image id",
+)
+async def get_image(
         image_id: Annotated[str, Path(title="The Id of the image")]
 ):
-    image_bytes: bytes = get_image_bytes(image_id)
-    return Response(content=image_bytes, media_type="image/png")
-
-
-@app.post("/login/")
-def login(
-        user_info: Login
-):
-    if check_user_validation(user_info.username, user_info.password):
-        return SUCCESS_RESULT
-    return FAIL_RESULT
-
-
-@app.post("/register/")
-def register(
-        user_info: Register
-):
-    if check_email_validation(user_info.email):
-        create_user(user_info.username, user_info.password, user_info.email)
-    else:
+    image_path = get_image_path(image_id)
+    if not image_path.is_file():
         result = FAIL_RESULT
-        result[MESSAGE] = "invalid email"
-        return result
-    return {"username": user_info.username, "password": user_info.password, "email": user_info.email}
+        result["message"] = "Image not found"
+        return FAIL_RESULT
+    return FileResponse(image_path, media_type="image/png")
 
 
-@app.post("/logout/")
-def logout(
-        user_info: Logout
+@app.post(
+    "/login/",
+    response_description="Login to your account",
+    response_model=UserResponse,
+)
+async def login(
+        user_info: UserModel = Body(...)
 ):
-    if get_user_by_id(user_info.user_id):
+    print(user_info)
+    result = await check_user_validation(user_info.username, user_info.password)
+    response = UserResponse(status=SUCCESS)
+    if isinstance(result, dict):
+        response.status = SUCCESS
+        result['password'] = ''
+        response.user = result
+        return response
+    response.status = FAIL
+    return response
+
+
+@app.post(
+    "/register/",
+    response_description="Register a new user",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    response_model_by_alias=False,
+)
+async def register(
+        user_info: UserModel = Body(...)
+):
+    response = UserResponse(status=SUCCESS)
+    if check_email_validation(user_info.email):
+        user = await get_user_by_name(user_info.username)
+        if isinstance(user, dict):
+            response.status = FAIL
+            response.message = "User exists"
+            return response
+        created_user = await create_user(user_info)
+        created_user.password = ''
+        response.status = SUCCESS
+        response.user = created_user
+        return response
+    else:
+        response.status = FAIL
+        response.message = "Invalid email"
+        return response
+
+
+@app.post(
+    "/logout/",
+    response_description="logout the user",
+)
+async def logout(
+        id: str = Body(..., embed=True)
+):
+    user = await get_user_by_id(id)
+    if isinstance(user, dict):
         return SUCCESS_RESULT
     return FAIL_RESULT
 
 
-@app.post("/create/post/")
-def create_post(
-        token: Annotated[str, Depends(oauth2_scheme)],
-        post: Post
+@app.post(
+    "/create/post/",
+    response_description="create a new post",
+    response_model=PostResponse,
+    status_code=status.HTTP_201_CREATED,
+    response_model_by_alias=False,
+)
+async def create_post(
+        post: PostModel
 ):
-    image_id = generate_image(post.content)
-    save_post(post.user_id, post.content, image_id)
-    return {"user_id": post.user_id, "content": post.content, "image_url": image_id}
+    response = PostResponse(status=SUCCESS)
+    user = await get_user_by_id(post.user_id)
+    if not isinstance(user, dict):
+        response.status = FAIL
+        response.message = "User does not exist"
+        return response
+    image_id = await generate_image(post.content)
+    if image_id is None:
+        response.status = FAIL
+        response.message = "Image create failed"
+        return response
+    now = datetime.datetime.now()
+    post.created_date = now.strftime("%d/%m/%Y %H:%M:%S")
+    post.img_url = "/image/" + image_id
+    result = await save_post(post)
+    response.status = SUCCESS
+    response.post = result
+    return response

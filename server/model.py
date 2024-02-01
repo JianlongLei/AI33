@@ -1,34 +1,23 @@
-from pydantic import BaseModel
-from typing import Union
+from typing import List
+
+from pydantic import BaseModel, Field
+
+from dao.dao_model import UserModel, PostModel
 
 
-class Post(BaseModel):
-    user_id: str
-    content: str
+class UserResponse(BaseModel):
+    status: str = Field(...)
+    message: str | None = Field(default=None)
+    user: UserModel | None = Field(default=None)
 
 
-class User(BaseModel):
-    user_id: str
-    name: str
-    description: str
-    uid: Union[str, None] = None
+class PostResponse(BaseModel):
+    status: str = Field(...)
+    message: str | None = Field(default=None)
+    post: PostModel | None = Field(default=None)
 
 
-class Register(BaseModel):
-    username: str
-    password: str
-    email: str
-
-
-class Login(BaseModel):
-    username: str
-    password: str
-
-
-class Logout(BaseModel):
-    user_id: str
-
-
-class Image(BaseModel):
-    id: str
-    image_src: str
+class PostCollectionResponse(BaseModel):
+    status: str = Field(...)
+    message: str | None = Field(default=None)
+    posts: List[PostModel] | None = Field(default=None)
