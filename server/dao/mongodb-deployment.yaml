@@ -14,7 +14,7 @@ spec:
         app: mongodb
     spec:
       containers:
-        - name: mongodb-container
+        - name: my-mongo-container
           image: mongo:latest
           imagePullPolicy: "IfNotPresent"
           ports:
