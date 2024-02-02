@@ -7,6 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from dao.dao_model import UserModel, PostModel, PostCollection
 
+
 app_settings = {
     'db_name': os.getenv('MONGO_DB'),
     'mongodb_url': os.getenv('MONGO_URL'),
@@ -22,6 +23,8 @@ app_settings = {
 #     uuidRepresentation="standard",
 # )
 client = AsyncIOMotorClient("mongodb://localhost:27017/")
+# client = AsyncIOMotorClient("mongodb://10.97.76.50:30001/")
+
 db = client.ai33
 users_collection = db.get_collection('users')
 posts_collection = db.get_collection('posts')
@@ -44,6 +47,8 @@ class UserDao:
             {"_id": new_user.inserted_id}
         )
         print(f'Created user: {created_user}')
+        if created_user is None:
+            return fix_object_id(new_user)
         return fix_object_id(created_user)
 
     @staticmethod
@@ -56,6 +61,8 @@ class UserDao:
     @staticmethod
     async def find_users_by_name(username: str):
         result = await users_collection.find_one({'username': username})
+        if result is None:
+            return None
         return fix_object_id(result)
 
     @staticmethod

@@ -96,7 +96,7 @@ async def register(
             response.message = "User exists"
             return response
         created_user = await create_user(user_info)
-        created_user.password = ''
+        created_user['password'] = ''
         response.status = SUCCESS
         response.user = created_user
         return response
