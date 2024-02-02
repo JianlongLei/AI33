@@ -1,8 +1,6 @@
 import os
-import uuid
 
 from bson import ObjectId
-from pymongo.cursor import Cursor
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from dao.dao_model import UserModel, PostModel, PostCollection
@@ -118,30 +116,6 @@ class PostDao:
     def delete_post(oid: ObjectId):
         result = db['post'].delete_one({'_id': oid})
         return result
-
-    @staticmethod
-    def find_all(order: int):
-        if order == 1 or -1:
-            query = db['post'].find().sort('_id', order)
-        else:
-            query = db['post'].find()
-        posts = PostDao.parse_post_query(query)
-        return posts
-
-    @staticmethod
-    def parse_post_query(query: Cursor):
-        posts = []
-        for result in query:
-            # parse post
-            oid = result['_id']
-            uid = result['user_id']
-            content = result['content']
-            img_url = result['img_url']
-            posts.append(
-                PostModel(post_id=str(oid), user_id=uid, content=content, created_date=oid.generation_time,
-                          img_url=img_url))
-        return posts
-
 
 class ImageDao:
     @staticmethod
