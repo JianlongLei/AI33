@@ -12,6 +12,9 @@ app_settings = {
     'db_username': os.getenv('MONGO_USER'),
     'db_password': os.getenv('MONGO_PASSWORD'),
 }
+
+all_env_vars = os.environ
+print(all_env_vars)
 # connect to mongodb
 
 # client = AsyncIOMotorClient(
@@ -20,8 +23,11 @@ app_settings = {
 #     password=app_settings.get('db_password'),
 #     uuidRepresentation="standard",
 # )
-client = AsyncIOMotorClient("mongodb://localhost:27017/")
-# client = AsyncIOMotorClient("mongodb://10.97.76.50:30001/")
+# client = AsyncIOMotorClient("mongodb://localhost:27017/")
+# dns = "mongodb-service"
+# dns = "my-mongo-container"
+ip = "10.96.1.1"
+client = AsyncIOMotorClient(f"mongodb://{ip}:27017/")
 
 db = client.ai33
 users_collection = db.get_collection('users')
