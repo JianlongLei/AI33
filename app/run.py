@@ -55,6 +55,7 @@ def register():
         print(response)
         print(response.json())
         if check_response(response):
+            response = response.json()
             current_user = User(response['id'], request.form['username'], response['password'], response['email'])
             return redirect(url_for('homepage'))
     return render_template('register.html')
