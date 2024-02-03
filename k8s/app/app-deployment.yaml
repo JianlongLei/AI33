@@ -5,7 +5,7 @@ metadata:
   labels:
     app: webapp
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: webapp
@@ -16,11 +16,17 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: hazel21/webapp:latest
+        image: hazel21/webapp:final
+        env:
+        - name: SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: server-address
+              key: SERVER_URL
         ports:
         - containerPort: 5000
       imagePullSecrets:
-      - name:  front-registry-secret
+      - name:  webapp-registry-secret
 
 ---
 apiVersion: v1
@@ -34,5 +40,5 @@ spec:
   ports:
     - protocol: TCP
       port: 5000
-      targetPort: 8000
+      targetPort: 5000
       nodePort: 30100

@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment-test
+  labels:
+    app: webapp-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp-test
+  template:
+    metadata:
+      labels:
+        app: webapp-test
+    spec:
+      containers:
+      - name: webapp-test
+        image: hazel21/webapp:env-using
+        ports:
+        - containerPort: 5001
+      imagePullSecrets:
+      - name:  front-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expose-webapp
+spec:
+  type: NodePort 
+  selector:
+    app: webapp-test
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+      nodePort: 30101
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: server-deployment
+#   labels:
+#     app: server
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: server
+#   template:
+#     metadata:
+#       labels:
+#         app: server
+#     spec:
+#       containers:
+#       - name: server
+#         image: hazel21/webapp:servertest
+#         ports:
+#         - containerPort: 8001
+#       imagePullSecrets:
+#       - name:  front-registry-secret
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: webapp-service-test
+# spec:
+#   type: NodePort 
+#   selector:
+#     app: server
+#   ports:
+#     - protocol: TCP
+#       port: 8001
+#       targetPort: 8001
+#       nodePort: 30102
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: webapp-service-test
+# spec:
+#   type: NodePort 
+#   selector:
+#     app: webapp-test
+#   ports:
+#     - protocol: TCP
+#       port: 5001
+#       targetPort: 5001
+#       nodePort: 30101
+
+
+
+

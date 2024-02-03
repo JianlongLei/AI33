@@ -32,4 +32,5 @@ spec:
 
 # 由于minikube运行在docker里面，与主机的端口是隔离的，所以需要在minikube里面访问，因此即使ingress部署成功之后也无法在主机上直接通过域名访问，部署到云端的时候不会存在这个问题
 # 下面这段代码可以直接将localhost的请求转发到minikube里面，直接访问服务
+# minikube tunnel
 # kubectl port-forward webapp-deployment-5d66cd79d9-c8nbv 5000:5000

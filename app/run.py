@@ -1,4 +1,6 @@
 import hashlib
+import os
+
 import requests
 
 from flask import *
@@ -8,7 +10,7 @@ from model.User import User
 
 app = Flask(__name__, template_folder="template/", static_folder="static/")
 app.debug = True
-myserver = "http://127.0.0.1:8000"
+myserver = os.getenv("SERVER_URL")
 
 global current_user
 current_user = None
@@ -129,7 +131,7 @@ def update():
     url = myserver + "/homepage/"
     last_post_id = request.args.get()
     # last_post_id = current_post_list[-1]['post_id']
-    # data = {"last_post_id": last_post_id}
+    data = {"last_post_id": last_post_id}
     # print(data)
     response = requests.get(url, json=data)
     # response = {"status": "success", "post_list":
@@ -156,5 +158,5 @@ def update():
 
 
 if __name__ == '__main__':
-    print("ready")
+    # print("ready")
     app.run(host='0.0.0.0')

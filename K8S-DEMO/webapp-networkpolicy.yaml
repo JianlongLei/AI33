@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: webapp-networkpolicy
+spec:
+  podSelector:
+    matchLabels:
+      app: webapp
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: webapp
+        - namespaceSelector:
+            matchLabels:
+              name: default
