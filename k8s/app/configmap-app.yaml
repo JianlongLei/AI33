@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-address
+data:
+#  在这里填入得到的ip，端口号为8000
+  SERVER_URL: "http://34.172.124.25:8000"
