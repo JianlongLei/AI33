@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      name: backend-template
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-container
+          image: ifon622/ai33_server:v1.0
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      
