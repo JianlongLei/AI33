@@ -17,7 +17,37 @@ spec:
     spec:
       containers:
         - name: backend-container
-          image: ifon622/ai33_server:v1.0
-          imagePullPolicy: IfNotPresent
+          image: jalonray/ai33_server:v2
+          ports:
+            - containerPort: 8000
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /image
+              name: backend-volume
+          env:
+            - name: X_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: apikey
+                  name: backend-secret
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mongodb-secret
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mongodb-secret
+            - name: MONGO_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: MONGO_URL
+      volumes:
+        - name: backend-volume
+          persistentVolumeClaim:
+            claimName: standard-pvc
       restartPolicy: Always
       

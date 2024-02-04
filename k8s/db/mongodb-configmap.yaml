@@ -11,5 +11,4 @@ metadata:
   name: mongodb-config
 data:
   database_name: "database"
-  database_user: "user"
   database_port: "27017"

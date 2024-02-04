@@ -9,5 +9,3 @@ spec:
     - protocol: TCP
       port: 8000
       targetPort: 8000
-#  type: NodePort
-  clusterIP: 10.96.3.1

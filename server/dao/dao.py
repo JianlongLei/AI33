@@ -6,28 +6,11 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dao.dao_model import UserModel, PostModel, PostCollection
 
 
-app_settings = {
-    'db_name': os.getenv('MONGO_DB'),
-    'mongodb_url': os.getenv('MONGO_URL'),
-    'db_username': os.getenv('MONGO_USER'),
-    'db_password': os.getenv('MONGO_PASSWORD'),
-}
-
-all_env_vars = os.environ
-print(all_env_vars)
-# connect to mongodb
-
-# client = AsyncIOMotorClient(
-#     app_settings.get('mongodb_url'),
-#     username=app_settings.get('db_username'),
-#     password=app_settings.get('db_password'),
-#     uuidRepresentation="standard",
-# )
-# client = AsyncIOMotorClient("mongodb://localhost:27017/")
-# dns = "mongodb-service"
-# dns = "my-mongo-container"
-ip = "10.96.1.1"
-client = AsyncIOMotorClient(f"mongodb://{ip}:27017/")
+ip = os.getenv("MONGO_IP").strip()
+username = os.getenv('MONGO_USER').strip()
+password = os.getenv('MONGO_PASSWORD').strip()
+mongo_url = f"mongodb://{username}:{password}@{ip}:27017/"
+client = AsyncIOMotorClient(mongo_url)
 
 db = client.ai33
 users_collection = db.get_collection('users')
@@ -64,6 +47,7 @@ class UserDao:
 
     @staticmethod
     async def find_users_by_name(username: str):
+        print(mongo_url)
         result = await users_collection.find_one({'username': username})
         if result is None:
             return None

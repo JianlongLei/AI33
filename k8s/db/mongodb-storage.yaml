@@ -1,22 +1,5 @@
 # mongodb-storage.yaml
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: mongodb-pv
-  labels:
-    types: local
-    app: mongodb
-spec:
-  capacity:
-    storage: 2Gi
-#  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
-  storageClassName: mongodb-storage
-  hostPath:
-    path: /data/mongodb
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongodb-pvc
@@ -25,7 +8,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: mongodb-storage
+  storageClassName: standard-rwo
   resources:
     requests:
       storage: 2Gi
