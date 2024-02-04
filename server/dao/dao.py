@@ -10,6 +10,7 @@ ip = os.getenv("MONGO_IP")
 username = os.getenv('MONGO_USER')
 password = os.getenv('MONGO_PASSWORD')
 mongo_url = f"mongodb://{username}:{password}@{ip}:27017/?authSource=admin"
+# mongo_url = f"mongodb://localhost:27017"
 client = AsyncIOMotorClient(mongo_url)
 
 db = client['ai33']
@@ -85,10 +86,11 @@ class PostDao:
 
     @staticmethod
     async def find_posts():
-        posts = await posts_collection.find().to_list(100)
+        posts = await posts_collection.find().to_list(1000)
         fixed_list = list()
         for post in posts:
             fixed_list.append(fix_object_id(post))
+        fixed_list.reverse()
         return PostCollection(posts=fixed_list)
 
     @staticmethod

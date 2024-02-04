@@ -18,12 +18,12 @@ spec:
       serviceAccountName: admin-service-account
       containers:
         - name: backend-container
-          image: jalonray/ai33_server:v6
+          image: jalonray/ai33_server:v104
           ports:
             - containerPort: 8000
           imagePullPolicy: Always
           volumeMounts:
-            - mountPath: /image
+            - mountPath: /images
               name: backend-volume
           env:
             - name: X_API_KEY
@@ -51,4 +51,3 @@ spec:
           persistentVolumeClaim:
             claimName: standard-pvc
       restartPolicy: Always
-      

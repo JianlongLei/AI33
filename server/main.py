@@ -133,11 +133,11 @@ async def create_post(
         post: PostModel
 ):
     response = PostResponse(status=SUCCESS)
-    user = await get_user_by_id(post.user_id)
-    if not isinstance(user, dict):
-        response.status = FAIL
-        response.message = "User does not exist"
-        return response
+    # user = await get_user_by_id(post.user_id)
+    # if not isinstance(user, dict):
+    #     response.status = FAIL
+    #     response.message = "User does not exist"
+    #     return response
     image_id = await generate_image(post.content)
     if image_id is None:
         response.status = FAIL

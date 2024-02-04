@@ -32,11 +32,13 @@
 <!--                {% set last_post_id = post["post_id"] %}-->
             {% endfor %}
         </div>
-        <a href="/post">Create a New Post</a>
+        <a href="/post" class="create-post-btn">
+            <button>Post</button>
+        </a>
         <!-- Pagination Section -->
-        <div class="pagination">
-            <a href="/update">Update</a>
-        </div>
+{#        <div class="pagination">#}
+{#            <a href="/update">Update</a>#}
+{#        </div>#}
     </div>
 
     <script>
