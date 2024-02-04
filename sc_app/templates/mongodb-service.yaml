@@ -1,0 +1,16 @@
+# mongodb-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  labels:
+    app: mongodb
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  clusterIP: 10.96.1.1
+  type: ClusterIP
