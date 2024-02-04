@@ -1,5 +1,5 @@
 # How to Run Web Application
-## 1. run by k8s command
+## run by k8s command
 1. apply database
     ```BASH
     kubectl apply -f k8s\db\mongodb-configmap.yaml
@@ -46,6 +46,19 @@ kubectl delete service mongodb-service
 kubectl delete service webapp-loadbalancer 
 kubectl delete service webapp-service 
 ```
-## Install via helm
-1. run 
-   `helm install sc-app ./sc_app`
+## Install via helm chart
+1. run `helm install sc-app ./sc_app` to install
+2. run `helm uninstall sc-app` to uninstall
+3. upgrade: 
+
+## Using RBAC Authorization
+1. apply roles, service account and role blinding
+   ```
+   kubectl apply -f k8s\security\admin-role.yaml
+   kubectl apply -f k8s\security\reader-role.yaml
+   kubectl apply -f k8s\security\editor-role.yaml
+   
+   kubectl apply -f k8s\security\admin-serviceaccount.yaml
+   kubectl apply -f k8s\security\rolebinding.yaml
+   ```
+2. 
