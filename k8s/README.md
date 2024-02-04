@@ -29,25 +29,19 @@
 6. delete all k8s objects
 ```
 kubectl delete secret mongodb-secret 
-kubectl delete secret my-mongodb
 kubectl delete secret webapp-registry-secret
 
-kubectl delete configmap mongo-config-produce
 kubectl delete configmap mongodb-config 
 kubectl delete configmap server-address 
 
-kubectl delete PersistentVolumeClaim mongo-produce
 kubectl delete PersistentVolumeClaim mongodb-pvc 
-kubectl delete PersistentVolumeClaim my-mongodb 
-
 kubectl delete PersistentVolume mongodb-pv 
-kubectl delete PersistentVolume pvc-6a9dd68a-1935-43ee-ad6a-fa804ecf39dc
 
 kubectl delete deployment backend-deployment 
-kubectl delete deployment mongodb-default 
+kubectl delete deployment mongodb-deployment 
 kubectl delete deployment webapp-deployment
 
-kubectl delete service backend-server 
+kubectl delete service backend-service 
 kubectl delete service mongodb-service
 kubectl delete service webapp-loadbalancer 
 kubectl delete service webapp-service 
