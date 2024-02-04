@@ -17,7 +17,7 @@ spec:
       serviceAccountName: admin-service-account
       containers:
       - name: webapp
-        image: jalonray/ai33_front:v103
+        image: jalonray/ai33_front:v104
         env:
         - name: SERVER_URL
           valueFrom:

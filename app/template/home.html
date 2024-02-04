@@ -13,6 +13,9 @@
         <a href="/logout" onmouseover="showLogoutTooltip()" onmouseout="hideLogoutTooltip()"> {{user_name}} :)</a>
         </h2>
         <div id="logout-tooltip" style="display: none;">Click to logout</div>
+            <a href="/post" class="create-post-btn">
+            <button>Post</button>
+        </a>
         <div class="row">
             {% for post in posts %}
                 <div class="col-md-6">
@@ -32,9 +35,6 @@
 <!--                {% set last_post_id = post["post_id"] %}-->
             {% endfor %}
         </div>
-        <a href="/post" class="create-post-btn">
-            <button>Post</button>
-        </a>
         <!-- Pagination Section -->
 {#        <div class="pagination">#}
 {#            <a href="/update">Update</a>#}
