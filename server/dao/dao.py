@@ -6,13 +6,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dao.dao_model import UserModel, PostModel, PostCollection
 
 
-ip = os.getenv("MONGO_IP").strip()
-username = os.getenv('MONGO_USER').strip()
-password = os.getenv('MONGO_PASSWORD').strip()
-mongo_url = f"mongodb://{username}:{password}@{ip}:27017/"
+ip = os.getenv("MONGO_IP")
+username = os.getenv('MONGO_USER')
+password = os.getenv('MONGO_PASSWORD')
+mongo_url = f"mongodb://{username}:{password}@{ip}:27017/?authSource=admin"
 client = AsyncIOMotorClient(mongo_url)
 
-db = client.ai33
+db = client['ai33']
 users_collection = db.get_collection('users')
 posts_collection = db.get_collection('posts')
 

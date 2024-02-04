@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend-container
-          image: jalonray/ai33_server:v2
+          image: jalonray/ai33_server:v6
           ports:
             - containerPort: 8000
           imagePullPolicy: Always
