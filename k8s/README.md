@@ -1,4 +1,5 @@
 # How to Run Web Application
+## 1. run by k8s command
 1. apply database
     ```BASH
     kubectl apply -f k8s\db\mongodb-configmap.yaml
@@ -25,4 +26,26 @@
     ```
    ![img.png](k8s-svc.png)
 5. visit via EXTERNAL-IP:5000.
+6. delete all k8s objects
+```
+kubectl delete secret mongodb-secret 
+kubectl delete secret webapp-registry-secret
 
+kubectl delete configmap mongodb-config 
+kubectl delete configmap server-address 
+
+kubectl delete PersistentVolumeClaim mongodb-pvc 
+kubectl delete PersistentVolume mongodb-pv 
+
+kubectl delete deployment backend-deployment 
+kubectl delete deployment mongodb-deployment 
+kubectl delete deployment webapp-deployment
+
+kubectl delete service backend-service 
+kubectl delete service mongodb-service
+kubectl delete service webapp-loadbalancer 
+kubectl delete service webapp-service 
+```
+## Install via helm
+1. run 
+   `helm install sc-app ./sc_app`
