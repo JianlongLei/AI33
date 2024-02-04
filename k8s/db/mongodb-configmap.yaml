@@ -12,5 +12,4 @@ metadata:
 data:
 #  mongod.conf: |
   database_name: "database"
-  database_user: "user"
   database_port: "27017"

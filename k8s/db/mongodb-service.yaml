@@ -12,5 +12,5 @@ spec:
     - protocol: TCP
       port: 27017
       targetPort: 27017
-  clusterIP: 10.96.1.1
+  clusterIP: 10.28.11.191
   type: ClusterIP
