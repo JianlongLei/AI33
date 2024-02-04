@@ -60,5 +60,6 @@ kubectl delete service webapp-service
    
    kubectl apply -f k8s\security\admin-serviceaccount.yaml
    kubectl apply -f k8s\security\rolebinding.yaml
+   kubectl apply -f k8s\security\user-rolebinding.yaml
    ```
 2. 
