@@ -15,6 +15,7 @@ spec:
       labels:
         app: backend
     spec:
+      serviceAccountName: admin-service-account
       containers:
         - name: backend-container
           image: jalonray/ai33_server:v6

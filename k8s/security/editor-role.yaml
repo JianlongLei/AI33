@@ -6,5 +6,5 @@ metadata:
   name: editor-role
 rules:
 - apiGroups: [""]
-  resources: ["pods", "services", "configmaps"]
+  resources: [ "pods", "services", "configmaps","secrets", "deployments" ]
   verbs: ["get", "list", "watch", "create", "update", "delete"]
