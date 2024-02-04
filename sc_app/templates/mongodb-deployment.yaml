@@ -1,0 +1,37 @@
+# mongodb-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongo-container
+          image: {{ .Values.database.image }}
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: {{ .Values.database.port }}
+          envFrom:
+            - configMapRef:
+                name: mongodb-config
+          env:
+            - name: mongodb-password
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mongodb-secret
+          volumeMounts:
+            - mountPath: /data/mongodb
+              name: mongodb
+      volumes:
+        - name: mongodb
+          persistentVolumeClaim:
+            claimName: mongodb-pvc

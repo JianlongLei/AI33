@@ -10,11 +10,14 @@ from agent import *
 from const import *
 from dao.dao_model import UserModel, PostModel
 from model import UserResponse, PostResponse, PostCollectionResponse
+from dao.dao import mongo_url
 from tools import *
+import logging
 
+logger = logging.getLogger(__name__)
 app = FastAPI()
 
-
+logger.info(mongo_url)
 @app.get(
     "/posts/{user_id}",
     response_description="Get all posts from a specific user",
@@ -130,11 +133,11 @@ async def create_post(
         post: PostModel
 ):
     response = PostResponse(status=SUCCESS)
-    user = await get_user_by_id(post.user_id)
-    if not isinstance(user, dict):
-        response.status = FAIL
-        response.message = "User does not exist"
-        return response
+    # user = await get_user_by_id(post.user_id)
+    # if not isinstance(user, dict):
+    #     response.status = FAIL
+    #     response.message = "User does not exist"
+    #     return response
     image_id = await generate_image(post.content)
     if image_id is None:
         response.status = FAIL

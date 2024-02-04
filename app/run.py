@@ -11,9 +11,10 @@ from model.User import User
 app = Flask(__name__, template_folder="template/", static_folder="static/")
 app.debug = True
 myserver = os.getenv("SERVER_URL")
+# myserver = "http://localhost:8000"
 
-global current_user
-current_user = None
+# global current_user
+# current_user = None
 current_post_list = []
 response_json = {
     'user_id': 1,
@@ -55,6 +56,7 @@ def register():
         print(response)
         print(response.json())
         if check_response(response):
+            response = response.json()['user']
             current_user = User(response['id'], request.form['username'], response['password'], response['email'])
             return redirect(url_for('homepage'))
     return render_template('register.html')
@@ -98,7 +100,7 @@ def post():
         title = request.form['title']
         content = request.form['content']
         url = myserver + "/create/post/"
-        data = {"user_id": current_user.user_id, "title": title, "content": content}
+        data = {"user_id": "123", "title": title, "content": content}
         response = requests.post(url, json=data)
         if check_response(response):
             return redirect(url_for('homepage'))
@@ -107,10 +109,10 @@ def post():
 
 @app.route('/')
 def homepage():
-    global current_user
-    global current_post_list
-    if current_user == None:
-        return redirect(url_for('login'))
+    # global current_user
+    # global current_post_list
+    # if current_user == None:
+    #     return redirect(url_for('login'))
     url = myserver + "/homepage/"
     response = requests.get(url)
     print(response)
@@ -122,7 +124,7 @@ def homepage():
                 post['img_url'] = myserver + post['img_url']
         print(current_post_list)
         return render_template('home.html', posts=current_post_list)
-    return render_template('home.html', posts=current_post_list, user_name=current_user.username)
+    return render_template('home.html', posts=current_post_list)
 
 
 @app.route('/update/', methods=['GET', 'POST'])

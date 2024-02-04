@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "helm_for_deploy.name" -}}
+{{- define "sc_app.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "helm_for_deploy.fullname" -}}
+{{- define "sc_app.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "helm_for_deploy.chart" -}}
+{{- define "sc_app.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "helm_for_deploy.labels" -}}
-helm.sh/chart: {{ include "helm_for_deploy.chart" . }}
-{{ include "helm_for_deploy.selectorLabels" . }}
+{{- define "sc_app.labels" -}}
+helm.sh/chart: {{ include "sc_app.chart" . }}
+{{ include "sc_app.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "helm_for_deploy.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "helm_for_deploy.name" . }}
+{{- define "sc_app.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "sc_app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "helm_for_deploy.serviceAccountName" -}}
+{{- define "sc_app.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "helm_for_deploy.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "sc_app.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

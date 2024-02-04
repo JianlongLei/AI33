@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      name: backend-template
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: admin-service-account
+      containers:
+        - name: backend-container
+          image: jalonray/ai33_server:v104
+          ports:
+            - containerPort: 8000
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /images
+              name: backend-volume
+          env:
+            - name: X_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: apikey
+                  name: backend-secret
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mongodb-secret
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mongodb-secret
+            - name: MONGO_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: MONGO_URL
+      volumes:
+        - name: backend-volume
+          persistentVolumeClaim:
+            claimName: standard-pvc
+      restartPolicy: Always

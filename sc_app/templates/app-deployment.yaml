@@ -5,7 +5,7 @@ metadata:
   labels:
     app: webapp
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: webapp
@@ -14,10 +14,9 @@ spec:
       labels:
         app: webapp
     spec:
-      serviceAccountName: admin-service-account
       containers:
       - name: webapp
-        image: jalonray/ai33_front:v104
+        image: {{ .Values.frontend.image }}
         env:
         - name: SERVER_URL
           valueFrom:
@@ -25,7 +24,7 @@ spec:
               name: server-address
               key: SERVER_URL
         ports:
-        - containerPort: 5000
+        - containerPort: {{ .Values.frontend.port }}
       imagePullSecrets:
       - name:  webapp-registry-secret
 

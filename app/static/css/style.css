@@ -9,6 +9,23 @@ body {
     align-items: center;
 }
 
+.create-post-btn button {
+    font-size: 24px; /* 设置字体大小 */
+    padding: 10px 15px; /* 设置内边距 */
+    border-radius: 50%; /* 使按钮变成圆形 */
+    border: none; /* 移除边框 */
+    cursor: pointer; /* 将鼠标指针变为手形 */
+    background-color: #007bff; /* 设置背景色 */
+    color: white; /* 设置字体颜色 */
+    width: 10vw;
+    height: 10vw;
+    text-align: center;
+}
+
+.create-post-btn button:hover {
+    background-color: #0056b3; /* 鼠标悬停时的背景色 */
+}
+
 .form-container {
     background-color: white;
     padding: 40px;

@@ -9,9 +9,8 @@ spec:
   selector:
     app: mongodb
   ports:
-    - port: 27017
-      nodePort: 30001
-#    - protocol: TCP
-#      port: 27017
-#      targetPort: 27017
-  type: NodePort
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  clusterIP: 10.96.1.1
+  type: ClusterIP

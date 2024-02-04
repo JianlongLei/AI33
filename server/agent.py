@@ -7,15 +7,18 @@ from pathlib import Path
 user_dao = UserDao()
 post_dao = PostDao()
 image_dao = ImageDao()
+logger = logging.getLogger(__name__)
 
 
 def get_image_path(image_id: str):
     image = Path(get_image(image_id))
+    logger.info(f"Getting image {image_id} from {file_path(image_id)}")
     return image
 
 
 async def generate_image(prompt: str):
     result = await create_image(prompt)
+    logger.info(f"Generated image {prompt} to {file_path(result)}")
     return result
 
 

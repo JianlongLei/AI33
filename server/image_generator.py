@@ -2,19 +2,24 @@ import os
 import uuid
 
 import requests
+import logging
 
+logger = logging.getLogger(__name__)
 
+api_key = os.getenv('X_API_KEY')
 def image_generator(prompt: str):
     r = requests.post('https://clipdrop-api.co/text-to-image/v1',
                       files={
                           'prompt': (None, prompt, 'text/plain')
                       },
                       headers={
-                          'x-api-key': '8661fb24acb685550f5d890e440d361aba8f8667cad3a1338bdecc55b1e6d3bbda4e7bd1331daf0aebe9005d199d1ef5'}
+                          'x-api-key': api_key}
                       )
     if (r.ok):
+        logger.info(f'Image successfully generated.')
         return r.content
     else:
+        logger.error(r)
         return None
 
 
@@ -37,7 +42,8 @@ def generate_image_id():
 
 
 def file_path(image_id: str):
-    return os.getcwd() + "/images/" + image_id + ".png"
+    return "/images/" + image_id + ".png"
+    # return os.getcwd() + "/images/" + image_id + ".png"
 
 
 async def create_image(prompt: str):
