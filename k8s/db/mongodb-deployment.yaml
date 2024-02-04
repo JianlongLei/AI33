@@ -13,6 +13,7 @@ spec:
       labels:
         app: mongodb
     spec:
+      serviceAccountName: app-service-account
       containers:
         - name: mongo-container
           image: mongo:latest
