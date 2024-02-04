@@ -14,6 +14,7 @@ spec:
       labels:
         app: webapp
     spec:
+      serviceAccountName: admin-service-account
       containers:
       - name: webapp
         image: hazel21/webapp:final

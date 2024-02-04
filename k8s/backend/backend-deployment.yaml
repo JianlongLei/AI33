@@ -15,6 +15,7 @@ spec:
       labels:
         app: backend
     spec:
+      serviceAccountName: admin-service-account
       containers:
         - name: backend-container
           image: ifon622/ai33_server:v1.0
